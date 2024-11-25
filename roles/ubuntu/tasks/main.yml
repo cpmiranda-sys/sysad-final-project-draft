@@ -1,0 +1,16 @@
+---
+- name: Copy Dockerfile to Ubuntu
+  become: true
+  copy:
+    src: /home/qcpmiranda/sysad-final-project-draft/Docker/Dockerfile
+    dest: /home/qcpmiranda/docker_files
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '777'
+- name: Build Docker Image (Ubuntu)
+  tags: ubuntu, docker
+  docker_image:
+    path: ~/Docker/Dockerfile
+    name: web-app
+    tag: latest
+  
