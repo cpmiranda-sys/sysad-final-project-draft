@@ -1,0 +1,47 @@
+---
+- name: Start the Docker Service in Ubuntu
+  tags: prep
+  become: true
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Ensure group docker exists
+  tags: prep
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: Adding the current user to the docker group
+  tags: prep
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: Create a docker directory
+  file:
+    path: /home/vboxuser/docker_files
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '777'
+
+- name: Copy Dockerfile to Ubuntu
+  become: true
+  copy:
+    src: /home/vboxuser/CPE212-Miranda/sysad-final-project-draft/Docker/Dockerfile
+    dest: /home/vboxuser/docker_files/
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '777'
+
+- name: Build Docker Image
+  become: true
+  docker_image:
+    path: /home/vboxuser/docker_files/
+    name: sysad-final-project
+    tag: latest
+    state: present
