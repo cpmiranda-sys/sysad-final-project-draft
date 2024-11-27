@@ -1,0 +1,9 @@
+---
+ - hosts: all
+   become: true
+   pre_tasks:
+
+ - hosts: all
+   become: true
+   roles:
+     - ubuntu
